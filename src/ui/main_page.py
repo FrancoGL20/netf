@@ -27,7 +27,6 @@ class MainPage(QWidget):
         # Add specific widgets for your main page here
         welcome_label = QLabel("Welcome to the application!")
         welcome_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        # Set a larger font size for the welcome label
         layout.addWidget(welcome_label)
     
     def get_preferred_size(self) -> tuple[int, int]:
