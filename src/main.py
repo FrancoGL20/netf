@@ -18,7 +18,7 @@ def main():
     window.register_page("Drop duplicated file lines", DropDuplicatesPage)
     
     # Switch to main page
-    window.switch_to_page("Drop duplicated file lines")
+    window.switch_to_page("Mapping")
     
     # Show the window
     window.show()

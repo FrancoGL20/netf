@@ -17,4 +17,5 @@ WINDOW_MIN_HEIGHT = 600
 # Paths
 PATH_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 PATH_SRC = os.path.join(PATH_ROOT, 'src')
-PATH_ICONS = os.path.join(PATH_SRC, 'assets', 'images', 'icons')
+PATH_IMAGES = os.path.join(PATH_SRC, 'assets', 'images')
+PATH_ICONS = os.path.join(PATH_SRC, 'assets', 'icons')

@@ -33,7 +33,7 @@ class BaseWindow(QMainWindow):
         file_menu.addAction("&Exit", self.close)
         
         # Pages Menu
-        self.pages_menu = menubar.addMenu("&Pages")
+        self.pages_menu = menubar.addMenu("&Tools")
         # Actions will be added dynamically when registering pages
         
         # Help Menu
