@@ -2,8 +2,7 @@ import os
 from PySide6.QtWidgets import QMainWindow, QMenuBar, QMessageBox, QWidget, QStackedLayout
 from PySide6.QtGui import QIcon
 from src.config.settings import (
-    APP_NAME, WINDOW_MIN_WIDTH, WINDOW_MIN_HEIGHT, 
-    APP_VERSION, APP_AUTHOR, APP_AUTHOR_GITHUB, PATH_ICONS
+    APP_NAME, APP_VERSION, APP_AUTHOR, APP_AUTHOR_GITHUB, PATH_ICONS
 )
 
 class BaseWindow(QMainWindow):
@@ -114,5 +113,6 @@ class BaseWindow(QMainWindow):
             if hasattr(page_instance, 'get_preferred_size'):
                 width, height = page_instance.get_preferred_size()
                 self.resize(width, height)
+                self.setMinimumSize(width, height)
         else:
             print(f"Error: Page '{page_name}' not found") 
