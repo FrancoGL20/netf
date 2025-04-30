@@ -1,8 +1,7 @@
-import os
 from PySide6.QtWidgets import QMainWindow, QMenuBar, QMessageBox, QWidget, QStackedLayout
-from PySide6.QtGui import QIcon
+from PySide6.QtCore import QSize
 from src.config.settings import (
-    APP_NAME, APP_VERSION, APP_AUTHOR, APP_AUTHOR_GITHUB, PATH_ICONS
+    APP_NAME, APP_VERSION, APP_AUTHOR, APP_AUTHOR_GITHUB
 )
 
 class BaseWindow(QMainWindow):
@@ -20,12 +19,10 @@ class BaseWindow(QMainWindow):
     def _setup_window(self):
         """Configure basic window properties."""
         self.setWindowTitle(APP_NAME)
-        # self.setMinimumSize(WINDOW_MIN_WIDTH, WINDOW_MIN_HEIGHT)
-        self.setWindowIcon(QIcon(os.path.join(PATH_ICONS, "Logo F.jpg")))
     
     def _create_menu_bar(self):
         """Create the main menu."""
-        menubar = QMenuBar(None)
+        menubar = QMenuBar(self)
         self.setMenuBar(menubar)
         
         # File Menu
@@ -44,18 +41,9 @@ class BaseWindow(QMainWindow):
         """Configure the central widget and stacked widget."""
         # Central widget
         self.central_widget = QWidget()
-        self.setCentralWidget(self.central_widget)
-        
-        # Main layout
-        # self.main_layout = QVBoxLayout()
-        # self.central_widget.setLayout(self.main_layout)
-        
-        # Stacked Widget to handle multiple pages
-        # self.stacked_widget = QStackedWidget()
-        # self.main_layout.addWidget(self.stacked_widget)
-        
         self.stacked_widget = QStackedLayout()
         self.central_widget.setLayout(self.stacked_widget)
+        self.setCentralWidget(self.central_widget)
     
     def _show_about_dialog(self):
         """Show the 'About' dialog."""
@@ -109,10 +97,13 @@ class BaseWindow(QMainWindow):
             page_instance = self.pages[page_name]['instance']
             self.stacked_widget.setCurrentIndex(self.pages[page_name]['index'])
             
+            self.setWindowTitle(f"{APP_NAME} - {page_name}")
+            
             # Resize the window if the page provides a get_preferred_size method
             if hasattr(page_instance, 'get_preferred_size'):
                 width, height = page_instance.get_preferred_size()
-                self.resize(width, height)
+                self.setFixedSize(width, height)
                 self.setMinimumSize(width, height)
+                self.setMaximumSize(16777215, 16777215)  # QWIDGETSIZE_MAX
         else:
             print(f"Error: Page '{page_name}' not found") 
