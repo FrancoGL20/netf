@@ -8,8 +8,8 @@ class MainPage(QWidget):
     def __init__(self):
         super().__init__()
         self._setup_ui()
-        self.preferred_width = 350
-        self.preferred_height = 350
+        self.PREFERRED_WIDTH = 350
+        self.PREFERRED_HEIGHT = 350
     
     def _setup_ui(self):
         """Configure the user interface of the main page."""
@@ -35,4 +35,4 @@ class MainPage(QWidget):
         Returns:
             tuple: (width, height) in pixels
         """
-        return self.preferred_width, self.preferred_height
+        return self.PREFERRED_WIDTH, self.PREFERRED_HEIGHT
