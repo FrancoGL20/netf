@@ -1,14 +1,15 @@
-from PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel, QPushButton, QGroupBox, QVBoxLayout, QFormLayout, QLineEdit
+from PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel, QPushButton, QGroupBox, QVBoxLayout, QFormLayout, QLineEdit, QGridLayout
 from PySide6.QtCore import Qt
 
 class MappingPage(QWidget):
     """Mapping xml templates function view."""
     
     def __init__(self):
+        self.preferred_width = 600
+        self.preferred_height = 450
+
         super().__init__()
         self._setup_ui()
-        self.PREFERRED_WIDTH = 600
-        self.PREFERRED_HEIGHT = 450
 
     
     def _setup_ui(self):
@@ -28,19 +29,28 @@ class MappingPage(QWidget):
         
         # Title
         welcome_label = QLabel("Mapping xml templates function.")
-        welcome_label.setStyleSheet("font-size: 15px; font-weight: bold; margin-left: 20px; margin-bottom: 20px;")
+        welcome_label.setStyleSheet("font-size: 15px; font-weight: bold; margin-bottom: 20px;")
         welcome_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         layout.addWidget(welcome_label)
         
         # Files and directory
-        form_layout_widget = QWidget()
-        form_layout = QFormLayout()
-        form_layout.setVerticalSpacing(15)
-        form_layout.addRow(QLabel("Input directory:"), QLineEdit())
-        form_layout.addRow(QLabel("Output directory:"), QLineEdit())
-        form_layout.addRow(QLabel("Mapping file:"), QLineEdit())
-        form_layout_widget.setLayout(form_layout)
-        layout.addWidget(form_layout_widget)
+        formulary_grid_widget = QWidget()
+        formulary_grid = QGridLayout()
+        # formulary_grid.setVerticalSpacing(15)
+        # formulary_grid.addRow(QLabel("Input directory:"), QLineEdit())
+        # formulary_grid.addRow(QLabel("Output directory:"), QLineEdit())
+        # formulary_grid.addRow(QLabel("Mapping file:"), QLineEdit())
+        # formulary_grid_widget.setLayout(formulary_grid)
+        formulary_grid.setVerticalSpacing(15)
+        formulary_grid.addWidget(QLabel("Input directory:"), 0, 0)
+        formulary_grid.addWidget(QLineEdit(), 0, 1)
+        formulary_grid.addWidget(QPushButton("Browse"), 0, 2)
+        formulary_grid.addWidget(QLabel("Output directory:"), 1, 0)
+        formulary_grid.addWidget(QLineEdit(), 1, 1)
+        formulary_grid.addWidget(QLabel("Mapping file:"), 2, 0)
+        formulary_grid.addWidget(QLineEdit(), 2, 1)
+        formulary_grid_widget.setLayout(formulary_grid)
+        layout.addWidget(formulary_grid_widget)
         
         group_box.setLayout(layout)
         return group_box
@@ -52,4 +62,4 @@ class MappingPage(QWidget):
         Returns:
             tuple: (width, height) in pixels
         """
-        return self.PREFERRED_WIDTH, self.PREFERRED_HEIGHT
+        return self.preferred_width, self.preferred_height

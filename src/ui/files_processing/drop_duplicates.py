@@ -6,10 +6,10 @@ class DropDuplicatesPage(QWidget):
     """Drop duplicated lines view"""
     
     def __init__(self):
-        super().__init__()
+        self.preferred_width = 400
+        self.preferred_height = 300
 
-        self.PREFERRED_WIDTH = 400
-        self.PREFERRED_HEIGHT = 300
+        super().__init__()
         self.controller = DropDuplicatesController()
         self._setup_ui()
         
@@ -42,7 +42,7 @@ class DropDuplicatesPage(QWidget):
         
         # File name display
         self.filename_label = QLabel("Selected file: None")
-        self.filename_label.setMaximumWidth(self.PREFERRED_WIDTH-20)
+        self.filename_label.setMaximumWidth(self.preferred_width-20)
         layout.addWidget(self.filename_label, 2, 1)
         
         # Process button
@@ -95,4 +95,4 @@ class DropDuplicatesPage(QWidget):
         Returns:
             tuple: (width, height) in pixels
         """
-        return self.PREFERRED_WIDTH, self.PREFERRED_HEIGHT
+        return self.preferred_width, self.preferred_height

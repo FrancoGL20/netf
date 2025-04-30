@@ -1,5 +1,4 @@
 from PySide6.QtWidgets import QMainWindow, QMenuBar, QMessageBox, QWidget, QStackedLayout
-from PySide6.QtCore import QSize
 from src.config.settings import (
     APP_NAME, APP_VERSION, APP_AUTHOR, APP_AUTHOR_GITHUB
 )
@@ -97,6 +96,7 @@ class BaseWindow(QMainWindow):
             page_instance = self.pages[page_name]['instance']
             self.stacked_widget.setCurrentIndex(self.pages[page_name]['index'])
             
+            # Set the window title to the page name
             self.setWindowTitle(f"{APP_NAME} - {page_name}")
             
             # Resize the window if the page provides a get_preferred_size method

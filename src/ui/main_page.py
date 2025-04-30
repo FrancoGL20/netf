@@ -8,8 +8,8 @@ class MainPage(QWidget):
     def __init__(self):
         super().__init__()
         self._setup_ui()
-        self.preferred_width = 500
-        self.preferred_height = 400
+        self.preferred_width = 350
+        self.preferred_height = 350
     
     def _setup_ui(self):
         """Configure the user interface of the main page."""
