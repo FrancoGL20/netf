@@ -54,25 +54,31 @@ class MappingPage(QWidget):
         formulary_grid_widget = QWidget()
         formulary_grid = QGridLayout()
         formulary_grid.setVerticalSpacing(15)
+        
         formulary_grid.addWidget(QLabel("Input directory:"), 0, 0)
         self.input_directory_line_edit = QLineEdit()
         formulary_grid.addWidget(self.input_directory_line_edit, 0, 1)
         formulary_grid.addWidget(QPushButton("Browse"), 0, 2)
+        
         formulary_grid.addWidget(QLabel("Output directory:"), 1, 0)
         self.output_directory_line_edit = QLineEdit()
         formulary_grid.addWidget(self.output_directory_line_edit, 1, 1)
+        formulary_grid.addWidget(QPushButton("Browse"), 1, 2)
+        
         formulary_grid.addWidget(QLabel("Mapping file:"), 2, 0)
         self.mapping_file_line_edit = QLineEdit()
         formulary_grid.addWidget(self.mapping_file_line_edit, 2, 1)
+        formulary_grid.addWidget(QPushButton("Browse"), 2, 2)
+
         formulary_grid_widget.setLayout(formulary_grid)
         layout.addWidget(formulary_grid_widget)
         
         # Buttons
         self.button_map_file = QPushButton("Map file")
         self.button_map_file.setToolTip("Click to map the selected file.")
+        self.button_map_file.setStyleSheet("font-size: 12px; font-weight: bold; padding-top: 8px; padding-bottom: 8px; margin-top: 20px; margin-left: 15px; margin-right: 15px;")
         self.button_map_file.clicked.connect(self._on_map_file)
         layout.addWidget(self.button_map_file)
-        # self.button_map_file.setStyleSheet("background-color: #4CAF50; color: white; font-size: 15px; font-weight: bold; padding: 10px;")
         
         group_box.setLayout(layout)
         return group_box
