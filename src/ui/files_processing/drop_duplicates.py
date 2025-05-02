@@ -5,9 +5,10 @@ from src.controllers.drop_duplicates_controller import DropDuplicatesController
 class DropDuplicatesPage(QWidget):
     """Drop duplicated lines view"""
     
-    def __init__(self):
+    def __init__(self, main_window=None):
         self.PREFERRED_WIDTH = 400
         self.PREFERRED_HEIGHT = 300
+        self.main_window = main_window
 
         super().__init__()
         self.controller = DropDuplicatesController()

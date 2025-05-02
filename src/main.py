@@ -15,19 +15,19 @@ def main():
     app.setApplicationName(APP_NAME)
     app.setWindowIcon(QIcon(os.path.join(PATH_ICONS, "Logo_F.ico")))
     
-    # Create main window
-    window = BaseWindow()
+    # Create main main_window
+    main_window = BaseWindow()
     
     # Register pages
-    window.register_page("Main", MainPage)
-    window.register_page("Mapping", MappingPage)
-    window.register_page("Drop duplicated file lines", DropDuplicatesPage)
+    main_window.register_page("Main", MainPage)
+    main_window.register_page("Mapping", MappingPage)
+    main_window.register_page("Drop duplicated file lines", DropDuplicatesPage)
     
     # Switch to main page
-    window.switch_to_page("Mapping")
+    main_window.switch_to_page("Mapping")
     
-    # Show the window
-    window.show()
+    # Show the main_window
+    main_window.show()
     
     return app.exec()
 

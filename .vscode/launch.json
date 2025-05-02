@@ -14,7 +14,7 @@
         },
         {
             "name": "Ejecutar proyecto NetF",
-            "type": "python",
+            "type": "debugpy",
             "request": "launch",
             "program": "${workspaceFolder}/main.py",
             "console": "integratedTerminal",

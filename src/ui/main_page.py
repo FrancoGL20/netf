@@ -5,11 +5,13 @@ from PySide6.QtCore import Qt
 class MainPage(QWidget):
     """Main page of the application."""
     
-    def __init__(self):
-        super().__init__()
-        self._setup_ui()
+    def __init__(self, main_window=None):
         self.PREFERRED_WIDTH = 350
         self.PREFERRED_HEIGHT = 350
+        self.main_window = main_window
+        
+        super().__init__()
+        self._setup_ui()
     
     def _setup_ui(self):
         """Configure the user interface of the main page."""
