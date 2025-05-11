@@ -1,7 +1,8 @@
-from PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel, QPushButton, QGroupBox, QVBoxLayout, QFormLayout, QLineEdit, QGridLayout, QFileDialog
+from PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel, QPushButton, QGroupBox, QVBoxLayout, QLineEdit, QGridLayout, QFileDialog, QCheckBox, QHBoxLayout
 from PySide6.QtCore import Qt
 from src.config.settings import PATH_ROOT
-import os, json
+from src.controllers.mapping_controller import MappingController
+from pathlib import Path
 
 class MappingPage(QWidget):
     """Mapping xml templates function view."""
@@ -9,8 +10,15 @@ class MappingPage(QWidget):
     def __init__(self, main_window=None):
         self.PREFERRED_WIDTH = 1000
         self.PREFERRED_HEIGHT = 450
-        self._MEMORY_FILE = os.path.join(PATH_ROOT,'.memory','mapping.json')
+        self.JSON_DIR_INPUT = 'directory_input'
+        self.JSON_DIR_OUTPUT = 'directory_output'
+        self.JSON_FILE_MAPPING = 'file_mapping'
+        self.JSON_FILE_TO_MAP = 'file_to_map'
+        self.JSON_CHECKBOX_DETAILS = 'checkbox_details'
+        self.JSON_CHECKBOX_UNMAP = 'checkbox_unmap'
+        
         self.main_window = main_window
+        self.controller = MappingController()
 
         super().__init__()
         self._setup_ui()
@@ -35,17 +43,20 @@ class MappingPage(QWidget):
     
     def _update_ui_with_memory(self):
         """Update the UI with the memory file data."""
-        
-        if os.path.exists(self._MEMORY_FILE):
-            with open(self._MEMORY_FILE, 'r') as file:
-                data = json.load(file)
 
-                # Update UI elements with data from the memory file
-                self.input_directory_line_edit.setText(data.get('input_directory', ''))
-                self.output_directory_line_edit.setText(data.get('output_directory', ''))
-                self.mapping_file_line_edit.setText(data.get('mapping_file', ''))
-                self.file_to_map_line_edit.setText(data.get('file_to_map', ''))
-    
+        memory_content=self.controller.get_memory_content()
+
+        # Update UI elements with data from the memory file
+        if memory_content:
+            data = memory_content
+
+            # Update UI elements with data from the memory file
+            self.input_directory_line_edit.setText(data.get(self.JSON_DIR_INPUT, ''))
+            self.output_directory_line_edit.setText(data.get(self.JSON_DIR_OUTPUT, ''))
+            self.mapping_file_line_edit.setText(data.get(self.JSON_FILE_MAPPING, ''))
+            self.file_to_map_line_edit.setText(data.get(self.JSON_FILE_TO_MAP, ''))
+            self.checkbox_details.setChecked(data.get(self.JSON_CHECKBOX_DETAILS, False))
+            self.checkbox_unmap.setChecked(data.get(self.JSON_CHECKBOX_UNMAP, False))
     
     def _create_group_box(self):
         """Create and configure the main group box."""
@@ -105,6 +116,21 @@ class MappingPage(QWidget):
         # Formulary widget - End
         formulary_widget.setLayout(formulary_grid_layout)
         page_layout.addWidget(formulary_widget)
+
+        # Checkbox for details and unmap
+        checkbox_group=QWidget()
+        checkbox_layout=QHBoxLayout()
+        checkbox_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        checkbox_layout.setSpacing(50)
+        checkbox_group.setLayout(checkbox_layout)
+        
+        self.checkbox_details = QCheckBox("Has details")
+        self.checkbox_details.setToolTip("Check if the file to map has details.")
+        checkbox_layout.addWidget(self.checkbox_details)
+        self.checkbox_unmap = QCheckBox("Unmap")
+        self.checkbox_unmap.setToolTip("Check if you want to unmap the file.")
+        checkbox_layout.addWidget(self.checkbox_unmap)
+        page_layout.addWidget(checkbox_group)
         
         # Buttons
         self.button_map_file = QPushButton("Map file")
@@ -121,14 +147,14 @@ class MappingPage(QWidget):
         
         if line_edit_index == 0:
             # Browse for input directory
-            directory = QFileDialog.getExistingDirectory(self, "Select Input Directory")
+            directory = Path(QFileDialog.getExistingDirectory(self, "Select Input Directory"))
             if directory:
-                self.input_directory_line_edit.setText(directory)
+                self.input_directory_line_edit.setText(directory.as_posix())
         elif line_edit_index == 1:
             # Browse for output directory
-            directory = QFileDialog.getExistingDirectory(self, "Select Output Directory")
+            directory = Path(QFileDialog.getExistingDirectory(self, "Select Output Directory"))
             if directory:
-                self.output_directory_line_edit.setText(directory)
+                self.output_directory_line_edit.setText(directory.as_posix())
         elif line_edit_index == 2:
             # Browse for mapping file
             file_name, _ = QFileDialog.getOpenFileName(self, "Select Mapping File", "", "Excel Files (*.xlsx)")
@@ -138,7 +164,7 @@ class MappingPage(QWidget):
             # Browse for file to map
             file_name, _ = QFileDialog.getOpenFileName(self, "Select File to Map", "", "XML Files (*.xml)")
             # Extract the file name from the path
-            file_name = os.path.basename(file_name)
+            file_name = Path(file_name).name
             if file_name:
                 self.file_to_map_line_edit.setText(file_name)
     
@@ -146,17 +172,16 @@ class MappingPage(QWidget):
     def _on_map_file(self):
         """Handle file mapping."""
         
-        # Create the memory file if it doesn't exist and write the current state to it
-        if not os.path.exists(self._MEMORY_FILE):
-            os.makedirs(os.path.dirname(self._MEMORY_FILE), exist_ok=True)
-        with open(self._MEMORY_FILE, 'w') as file:
-            json_data = {
-                'input_directory': self.input_directory_line_edit.text(),
-                'output_directory': self.output_directory_line_edit.text(),
-                'mapping_file': self.mapping_file_line_edit.text(),
-                'file_to_map': self.file_to_map_line_edit.text()
-            }
-            json.dump(json_data, file, indent=4)
+        # Save memory content
+        JSON_DATA = {
+            self.JSON_DIR_INPUT: self.input_directory_line_edit.text(),
+            self.JSON_DIR_OUTPUT: self.output_directory_line_edit.text(),
+            self.JSON_FILE_MAPPING: self.mapping_file_line_edit.text(),
+            self.JSON_FILE_TO_MAP: self.file_to_map_line_edit.text(),
+            self.JSON_CHECKBOX_DETAILS: self.checkbox_details.isChecked(),
+            self.JSON_CHECKBOX_UNMAP: self.checkbox_unmap.isChecked()
+        }
+        self.controller.save_memory_content(JSON_DATA)
         
         # TODO: Implement the mapping logic here.
         print("Mapping file...")
