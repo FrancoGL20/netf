@@ -1,0 +1,6 @@
+- Follow PEP8 style guide for Python code
+- Use English for comments and documentation
+- Always comment the code (function, class, method, etc.)
+- Always try to use the MVC pattern
+- Use PySide6 for the GUI
+- Use the .memory folder to store the memory of the user
