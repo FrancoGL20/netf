@@ -1,5 +1,5 @@
 """
-General helper functions for the application.
+General simple helper functions for the application.
 """
 
 def get_resource_path(relative_path: str) -> str:

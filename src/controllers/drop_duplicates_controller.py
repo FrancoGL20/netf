@@ -1,5 +1,5 @@
 import os
-from src.utils.drop_duplicates import drop_duplicates
+from src.utils.files_processing import drop_duplicates
 from PySide6.QtWidgets import QWidget, QFileDialog
 
 class DropDuplicatesController:

@@ -1,5 +1,6 @@
 - Follow PEP8 style guide for Python code
-- Use English for comments and documentation
+- Use English for comments and documentation in the code
+- Use spanish when talking to the user
 - Always comment the code (function, class, method, etc.)
 - Always try to use the MVC pattern
 - Use PySide6 for the GUI

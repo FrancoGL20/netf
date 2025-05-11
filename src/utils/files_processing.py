@@ -1,3 +1,7 @@
+"""
+Functions to process entire files.
+"""
+
 import os
 
 def drop_duplicates(input_filename: str, output_filename: str, output_dirname: str|None = None) -> tuple [int,int]:
