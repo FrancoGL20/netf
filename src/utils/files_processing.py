@@ -11,8 +11,8 @@ def drop_duplicates(input_filename: str, output_filename: str, output_dirname: s
     Args:
         input_filename: str, path to the input file
         output_filename: str, name of the output file
-            - If output_dirname is None, the input_filename directory will be used
-            - If the output_dirname does not exist, it will be created
+            1. If output_dirname is None, the input_filename directory will be used
+            2. If the output_dirname does not exist, it will be created
         output_dirname: str, path to the output directory
     
     Returns:

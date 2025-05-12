@@ -10,6 +10,7 @@ class MappingPage(QWidget):
     def __init__(self, main_window=None):
         self.PREFERRED_WIDTH = 1000
         self.PREFERRED_HEIGHT = 450
+        self.COLUMNS_TO_MAP=["TM Tariff ID","Tariff ID","TariffCode"]
         self.JSON_DIR_OUTPUT = 'directory_output'
         self.JSON_FILE_MAPPING = 'file_mapping'
         self.JSON_FILE_TO_MAP = 'file_to_map'

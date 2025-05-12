@@ -9,12 +9,14 @@ import os
 def map_ids(
         FILE_WITH_MAPPING:str,
         FILE_TO_MAP:str,
-        FILE_MAPPED:str,
+        DIR_OUTPUT:str,
         COLUMNS_TO_MAP:list,
         UNMAP:bool=False,
         HAS_DETAILS:bool=False,
-    ) -> str|set:
+    ) -> str|set[int,int,int]:
     
+    FILE_MAPPED=Path(f"{DIR_OUTPUT}/{Path(FILE_TO_MAP).stem} - Mapped.{Path(FILE_TO_MAP).suffix}")
+
     columns_mapping={
         "tariff_id_to_map":"Tariff ID", # Original ID to map
         "tariff_number":"Tariff Number", # New ID
@@ -27,8 +29,8 @@ def map_ids(
         }
 
     # Verify if the output file exists and remove it
-    if os.path.exists(FILE_MAPPED):
-        os.remove(FILE_MAPPED)
+    if FILE_MAPPED.exists():
+        FILE_MAPPED.unlink()
 
     # Copy the file to map to the output file (to modify it)
     shutil.copy(FILE_TO_MAP,FILE_MAPPED)
@@ -59,6 +61,7 @@ def map_ids(
     errors_number=0
     mapped_counter=0
     index_of_mapping_column=None
+    counter_h=0
 
     # Iterate over rows
     for row in table.iterfind("./ss:Row",namespace):
@@ -81,10 +84,10 @@ def map_ids(
             
             # If there is no column to map in the file
             if row_number==2 and index_of_mapping_column is None:
-                os.remove(FILE_MAPPED)
+                FILE_MAPPED.unlink()
                 return "No column to map was found"
             
-            # If the row is a detail row or the file has details
+            # If the row is a detail ("D") row or the file has details
             #     # Skip it and not count it in the row total
             if (row_number==2 and HAS_DETAILS) or (column_number==1 and cell.find("./ss:Data",namespace).text=="D"):
                 break # go to next row
@@ -92,6 +95,7 @@ def map_ids(
             # If the column to map is found 
             # and the cell has the same column number as the index of the column to map
             if (index_of_mapping_column is not None) and (column_number==index_of_mapping_column):
+                counter_h+=1
                 original_id=cell.find("./ss:Data",namespace)
                 # If the original id has a mapping value
                 if DICT_MAPPING.get(original_id.text) is not None:
@@ -113,17 +117,26 @@ def map_ids(
     tree.write(FILE_MAPPED,encoding="UTF-8", xml_declaration=True,short_empty_elements=False)
 
     # Row total, mapped and errors
-    return (row_number-1,mapped_counter,errors_number)
+    return (counter_h,mapped_counter,errors_number)
 
 
-INPUT_DIRECTORY=Path(r"C:\Users\francisco.gutierrez\OneDrive - Netlogistik\Documentos\Python scripts (useful for any project)\Mapeo de IDs\Input")
-OUPUT_DIRECTORY=Path(r"C:\Users\francisco.gutierrez\OneDrive - Netlogistik\Documentos\Python scripts (useful for any project)\Mapeo de IDs\Output")
 FILE_WITH_MAPPING=Path(r"C:\Users\francisco.gutierrez\OneDrive - Netlogistik\Documentos\Python scripts (useful for any project)\Mapeo de IDs\Input\Mapping AP V3 con _.xlsx")
+INPUT_DIRECTORY=Path(r"C:\Users\francisco.gutierrez\OneDrive - Netlogistik\Documentos\Python scripts (useful for any project)\Mapeo de IDs\Input")
 TEMP_FILE_TO_MAP="AP Tariff 02 - Services"
+OUPUT_DIRECTORY=Path(r"C:\Users\francisco.gutierrez\OneDrive - Netlogistik\Documentos\Python scripts (useful for any project)\Mapeo de IDs\Output")
 
 COLUMNS_TO_MAP=["TM Tariff ID","Tariff ID","TariffCode"]
-TEMP_FILE_TO_MAP_EXT="xml"
-FILE_TO_MAP=f"{INPUT_DIRECTORY}/{TEMP_FILE_TO_MAP}.{TEMP_FILE_TO_MAP_EXT}"
-FILE_MAPPED=f"{OUPUT_DIRECTORY}/{TEMP_FILE_TO_MAP} - Mapped.{TEMP_FILE_TO_MAP_EXT}"
-HAS_DETAILS=False
-UNMAP=False
+FILE_TO_MAP=Path(f"{INPUT_DIRECTORY}/{TEMP_FILE_TO_MAP}.xml")
+# HAS_DETAILS=False
+# UNMAP=False
+
+result=map_ids(
+        FILE_WITH_MAPPING,
+        FILE_TO_MAP,
+        OUPUT_DIRECTORY,
+        COLUMNS_TO_MAP,
+        # UNMAP,
+        # HAS_DETAILS,
+    )
+
+print(result)
