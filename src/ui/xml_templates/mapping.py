@@ -1,4 +1,4 @@
-from PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel, QPushButton, QGroupBox, QVBoxLayout, QLineEdit, QGridLayout, QFileDialog, QCheckBox, QHBoxLayout
+from PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel, QPushButton, QGroupBox, QVBoxLayout, QLineEdit, QGridLayout, QFileDialog, QCheckBox, QHBoxLayout, QMessageBox
 from PySide6.QtCore import Qt
 from src.config.settings import PATH_ROOT
 from src.controllers.mapping_controller import MappingController
@@ -14,9 +14,10 @@ class MappingPage(QWidget):
         self.JSON_DIR_OUTPUT = 'directory_output'
         self.JSON_FILE_MAPPING = 'file_mapping'
         self.JSON_FILE_TO_MAP = 'file_to_map'
-        self.JSON_CHECKBOX_DETAILS = 'checkbox_details'
+        self.JSON_CHECKBOX_HAS_DETAILS = 'checkbox_has_details'
         self.JSON_CHECKBOX_UNMAP = 'checkbox_unmap'
         self.JSON_CHECKBOX_CUSTOM_COLUMN_TO_MAP = 'checkbox_custom_column_to_map'
+        self.JSON_CUSTOM_COLUMN_TO_MAP = 'custom_column_to_map'
         
         self.main_window = main_window
         self.controller = MappingController()
@@ -55,9 +56,13 @@ class MappingPage(QWidget):
             self.output_directory_line_edit.setText(data.get(self.JSON_DIR_OUTPUT, ''))
             self.mapping_file_line_edit.setText(data.get(self.JSON_FILE_MAPPING, ''))
             self.file_to_map_line_edit.setText(data.get(self.JSON_FILE_TO_MAP, ''))
-            self.checkbox_details.setChecked(data.get(self.JSON_CHECKBOX_DETAILS, False))
+            self.checkbox_has_details.setChecked(data.get(self.JSON_CHECKBOX_HAS_DETAILS, False))
             self.checkbox_unmap.setChecked(data.get(self.JSON_CHECKBOX_UNMAP, False))
             self.checkbox_custom_column_to_map.setChecked(data.get(self.JSON_CHECKBOX_CUSTOM_COLUMN_TO_MAP, False))
+            
+            if data.get(self.JSON_CHECKBOX_CUSTOM_COLUMN_TO_MAP, False) == True:
+                # The _on_custom_column_to_map function is automatically called when the checkbox is checked
+                self.line_edit_custom_column_to_map.setText(data.get(self.JSON_CUSTOM_COLUMN_TO_MAP, ''))
     
     def _create_group_box(self):
         """Create and configure the main group box."""
@@ -116,9 +121,9 @@ class MappingPage(QWidget):
         checkbox_layout.setSpacing(50)
         checkbox_group.setLayout(checkbox_layout)
         # Checkbox for details
-        self.checkbox_details = QCheckBox("Has details")
-        self.checkbox_details.setToolTip("Check if the file to map has details.")
-        checkbox_layout.addWidget(self.checkbox_details)
+        self.checkbox_has_details = QCheckBox("Has details")
+        self.checkbox_has_details.setToolTip("Check if the file to map has details.")
+        checkbox_layout.addWidget(self.checkbox_has_details)
         # Checkbox for unmap
         self.checkbox_unmap = QCheckBox("Unmap")
         self.checkbox_unmap.setToolTip("Check if you want to unmap the file.")
@@ -147,6 +152,41 @@ class MappingPage(QWidget):
         return group_box
     
     
+    def _on_map_file(self):
+        """Handle file mapping."""
+        
+        # Save memory content
+        JSON_DATA = {
+            self.JSON_DIR_OUTPUT: self.output_directory_line_edit.text(),
+            self.JSON_FILE_MAPPING: self.mapping_file_line_edit.text(),
+            self.JSON_FILE_TO_MAP: self.file_to_map_line_edit.text(),
+            self.JSON_CHECKBOX_HAS_DETAILS: self.checkbox_has_details.isChecked(),
+            self.JSON_CHECKBOX_UNMAP: self.checkbox_unmap.isChecked(),
+            self.JSON_CHECKBOX_CUSTOM_COLUMN_TO_MAP: self.checkbox_custom_column_to_map.isChecked()
+        }
+
+        if JSON_DATA[self.JSON_CHECKBOX_CUSTOM_COLUMN_TO_MAP] == True:
+            JSON_DATA[self.JSON_CUSTOM_COLUMN_TO_MAP] = self.line_edit_custom_column_to_map.text()
+
+        self.controller.save_memory_content(JSON_DATA)
+        
+        # Map IDs
+        result = self.controller.map_ids(
+            file_with_mapping=JSON_DATA[self.JSON_FILE_MAPPING],
+            file_to_map=JSON_DATA[self.JSON_FILE_TO_MAP],
+            dir_output=JSON_DATA[self.JSON_DIR_OUTPUT],
+            columns_to_map=JSON_DATA[self.JSON_CUSTOM_COLUMN_TO_MAP] if JSON_DATA[self.JSON_CHECKBOX_CUSTOM_COLUMN_TO_MAP] else ["TM Tariff ID", "Tariff ID", "TariffCode"],
+            unmap=JSON_DATA[self.JSON_CHECKBOX_UNMAP],
+            has_details=JSON_DATA[self.JSON_CHECKBOX_HAS_DETAILS]
+        )
+        
+        # Show result
+        if isinstance(result, str):
+            QMessageBox.critical(self, "Error", result)
+        else:
+            QMessageBox.information(self, "Success", f"File '{Path(JSON_DATA[self.JSON_FILE_TO_MAP]).name}' mapped successfully.\n\n{result[0]} rows processed,\n{result[1]} IDs mapped,\n{result[2]} row unmapped.")
+    
+    
     def _on_browse(self, line_edit_index: int):
         """Handle the browse button click for the output and mapping file."""
         
@@ -168,29 +208,13 @@ class MappingPage(QWidget):
             if file_name:
                 self.mapping_file_line_edit.setText(file_name.as_posix())
     
-    
-    def _on_map_file(self):
-        """Handle file mapping."""
-        
-        # Save memory content
-        JSON_DATA = {
-            self.JSON_DIR_OUTPUT: self.output_directory_line_edit.text(),
-            self.JSON_FILE_MAPPING: self.mapping_file_line_edit.text(),
-            self.JSON_FILE_TO_MAP: self.file_to_map_line_edit.text(),
-            self.JSON_CHECKBOX_DETAILS: self.checkbox_details.isChecked(),
-            self.JSON_CHECKBOX_UNMAP: self.checkbox_unmap.isChecked(),
-            self.JSON_CHECKBOX_CUSTOM_COLUMN_TO_MAP: self.checkbox_custom_column_to_map.isChecked()
-        }
-        self.controller.save_memory_content(JSON_DATA)
-        
-        # TODO: Implement the mapping logic here.
-        print("Mapping file...")
-    
+
     def _on_custom_column_to_map(self):
-        """Handle custom column to map checkbox state change."""
+        """Handle custom column to map checkbox state change, i.e. when the checkbox is checked or unchecked this function is called."""
         
         self.line_edit_custom_column_to_map.setEnabled(self.checkbox_custom_column_to_map.isChecked())
         self.line_edit_custom_column_to_map.setToolTip("Disabled" if not self.checkbox_custom_column_to_map.isChecked() else "Specify the column name to map")
+
 
     def get_preferred_size(self) -> tuple[int, int]:
         """Returns the preferred size for this page.

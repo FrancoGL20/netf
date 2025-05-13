@@ -129,13 +129,13 @@ def map_ids(
                 # If the original id has a mapping value
                 if dict_mapping.get(original_id.text) is not None:
                     new_id = dict_mapping[original_id.text]
+                    mapped_counter += 1
                 # If the original id has no mapping value
                 else:
                     new_id = "XXXXX"
                     errors_number += 1
                 
                 original_id.text = new_id
-                mapped_counter += 1
                 break # go to next row (avoiding the rest of the cells in the row)
             
             column_number += 1
