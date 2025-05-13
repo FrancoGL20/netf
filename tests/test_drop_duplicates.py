@@ -1,5 +1,4 @@
 import sys
-import os
 import pytest
 from pathlib import Path
 import shutil
@@ -8,7 +7,7 @@ import shutil
 TEST_PATH = Path(__file__).parent
 
 # Add the project root to sys.path for imports
-sys.path.insert(0, os.path.abspath(os.path.join(TEST_PATH, "..")))
+sys.path.insert(0, TEST_PATH.parent.as_posix())
 
 from src.utils.files_processing import drop_duplicates
 
