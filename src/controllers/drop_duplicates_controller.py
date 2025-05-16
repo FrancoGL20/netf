@@ -1,6 +1,6 @@
-import os
 from src.utils.files_processing import drop_duplicates
 from PySide6.QtWidgets import QWidget, QFileDialog
+from pathlib import Path
 
 class DropDuplicatesController:
     """Controller to process the removal of duplicate lines."""
@@ -36,7 +36,7 @@ class DropDuplicatesController:
 
     def get_file_name(self, file_path: str) -> str:
         """Extract file name from path."""
-        return os.path.basename(file_path)
+        return Path(file_path).name
 
 
     def process_selected_file(self) -> tuple[int, int]:

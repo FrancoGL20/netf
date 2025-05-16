@@ -2,7 +2,7 @@
 Global application settings.
 """
 
-import os
+from pathlib import Path
 
 # Application settings
 APP_NAME = "NetF"
@@ -15,7 +15,9 @@ WINDOW_MIN_WIDTH = 800
 WINDOW_MIN_HEIGHT = 600
 
 # Paths
-PATH_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-PATH_SRC = os.path.join(PATH_ROOT, 'src')
-PATH_IMAGES = os.path.join(PATH_SRC, 'assets', 'images')
-PATH_ICONS = os.path.join(PATH_SRC, 'assets', 'icons')
+path_root = Path(__file__).parent.parent.parent
+PATH_ROOT = path_root.as_posix()
+PATH_SRC = path_root.joinpath('src').as_posix()
+PATH_IMAGES = path_root.joinpath('assets', 'images').as_posix()
+PATH_ICONS = path_root.joinpath('assets', 'icons').as_posix()
+
