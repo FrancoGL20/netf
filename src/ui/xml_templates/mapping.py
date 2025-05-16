@@ -135,7 +135,7 @@ class MappingPage(QWidget):
         checkbox_layout.addWidget(self.checkbox_custom_column_to_map)
         # Line edit for custom column to map
         self.line_edit_custom_column_to_map = QLineEdit()
-        self.line_edit_custom_column_to_map.setPlaceholderText("Custom column to map")
+        self.line_edit_custom_column_to_map.setPlaceholderText("Custom column to map, other than \"TM Tariff ID\",\"Tariff ID\" or \"TariffCode\".")
         self.line_edit_custom_column_to_map.setToolTip("Disabled")
         self.line_edit_custom_column_to_map.setEnabled(False)
         checkbox_layout.addWidget(self.line_edit_custom_column_to_map)

@@ -7,13 +7,21 @@ from src.ui.files_processing.drop_duplicates import DropDuplicatesPage
 from PySide6.QtWidgets import QApplication
 from PySide6.QtGui import QIcon
 from src.config.settings import APP_NAME, PATH_ICONS
+from pathlib import Path
+
+try:
+    from ctypes import windll  # Only exists on Windows.
+    myappid = 'FCompany.NetF.1.0'
+    windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
+except ImportError:
+    pass
 
 def main():
     """Main entry point of the application."""
     app = QApplication(sys.argv)
     # app.setStyle("Fusion")
     app.setApplicationName(APP_NAME)
-    app.setWindowIcon(QIcon(os.path.join(PATH_ICONS, "Logo_F.ico")))
+    app.setWindowIcon(QIcon(Path(PATH_ICONS, "Logo_F.ico").as_posix()))
     
     # Create main main_window
     main_window = BaseWindow()
