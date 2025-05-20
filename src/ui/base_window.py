@@ -20,9 +20,16 @@ class BaseWindow(QMainWindow):
         # Register pages
         self._pages = {}
 
+        self._menus = {
+            "menu_tools": self.pages_menu,
+            "menu_templates": self.templates_menu,
+        }
+
+
     def _setup_window(self):
         """Configure basic window properties."""
         self.setWindowTitle(APP_NAME)
+
 
     def _create_menu_bar(self):
         """Create the main menu."""
@@ -33,28 +40,34 @@ class BaseWindow(QMainWindow):
         file_menu = menubar.addMenu("&File")
         file_menu.addAction("&Exit", self.close)
 
-        # Pages Menu
+        # Files tools menu
         self.pages_menu = menubar.addMenu("&Tools")
-        # Actions will be added dynamically when registering pages
+        
+        # Templates tools menu
+        self.templates_menu = menubar.addMenu("&Templates")
 
         # Help Menu
         help_menu = menubar.addMenu("&Help")
         help_menu.addAction("&About", self._show_about_dialog)
 
+
     def _setup_central_widget(self):
         """Configure the central widget and stacked widget."""
-        # Central widget
+
+        # The central widget is a QWidget with a QStackedLayout as its layout
         self.central_widget = QWidget()
         self.stacked_widget = QStackedLayout()
         self.central_widget.setLayout(self.stacked_widget)
         self.setCentralWidget(self.central_widget)
 
-    def register_page(self, name: str, page_class, page_args=None):
+
+    def register_page(self, name: str, page_menu: str, page_class: type, page_args: dict = None):
         """
         Register a page in the application.
 
         Args:
             name: Page name to display in the menu
+            page_menu: Menu to add the page to
             page_class: Page class
             page_args: Arguments to initialize the page (optional)
         """
@@ -75,7 +88,7 @@ class BaseWindow(QMainWindow):
         def switch_to_this_page():
             self.switch_to_page(name)
 
-        self.pages_menu.addAction(f"&{name}", switch_to_this_page)
+        self._menus[page_menu].addAction(f"&{name}", switch_to_this_page)
 
         return page_index
 
