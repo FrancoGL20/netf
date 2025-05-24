@@ -30,13 +30,22 @@ A scalable desktop application built with PySide6.
 
 ## Run the application using the command line
 
-```bash
-python src/main.py
-```
+1. Navigate to the project directory
+2. Run the following command:
+
+   Windows:
+   ```bash
+   python .\main.py
+   ```
+
+   Linux/Mac:
+   ```bash
+   python3 main.py
+   ```
 
 ## Compile the application to an executable
 
-### Windows
+<!-- ### Windows
 1. Install Visual Studio
 2. In visual Studio install the following components:
    - Compiling tools for C++ (x64/x86)
@@ -51,6 +60,14 @@ python src/main.py
 5. Run the following command to compile the application:
    ```bash
    pyside6-deploy .\main.py
+   ``` -->
+
+### Windows
+
+1. Navigate to the project directory
+2. Run the following command:
+   ```bash
+   pyinstaller --noconfirm --clean NetF.spec
    ```
 
 ## Project Structure
@@ -62,4 +79,5 @@ The application is organized in a modular way to facilitate maintenance and scal
   - `ui/`: User interfaces and widgets
   - `controllers/`: Business logic
   - `utils/`: General utilities
-  - `resources/`: Static resources 
+- `assets/`: Static resources
+- `tests/`: Test files
