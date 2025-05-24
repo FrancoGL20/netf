@@ -27,7 +27,7 @@ def main():
     main_window = BaseWindow()
     
     # Register pages
-    main_window.register_page("Main", "menu_tools", MainPage)
+    # main_window.register_page("Main", "menu_tools", MainPage)
     main_window.register_page("Mapping", "menu_templates", MappingPage)
     main_window.register_page("Drop duplicated file lines", "menu_tools", DropDuplicatesPage)
     
